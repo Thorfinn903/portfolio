@@ -1,0 +1,26 @@
+[
+  {
+    "role": "ERPNext Technical Support",
+    "company": "Hard n Soft Consultancy",
+    "location": "Surat, Gujarat",
+    "duration": "09/2024 – 03/2025",
+    "responsibilities": [
+      "Configured and customized ERPNext modules including custom fields, workflows, and permissions",
+      "Created and optimized ERP reports using Report Builder and SQL Query Reports",
+      "Resolved 50+ live client issues related to data inconsistencies, workflows, and permissions",
+      "Assisted clients in understanding Sales, Purchase, Inventory, and Accounting workflows",
+      "Documented ERP processes to reduce onboarding and issue resolution time"
+    ]
+  },
+  {
+    "role": "React Trainee",
+    "company": "Sarvadhi Solutions Pvt. Ltd.",
+    "location": "Surat, Gujarat",
+    "duration": "07/2024 – 08/2024",
+    "responsibilities": [
+      "Developed responsive UI components for the ClickMart e-commerce platform",
+      "Built mobile-friendly designs using React.js and Tailwind CSS",
+      "Ensured cross-browser compatibility and clean UI structure"
+    ]
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "programming_languages": {
+    "primary": ["Python", "JavaScript"],
+    "core": ["C++"]
+  },
+  "databases": {
+    "relational": ["MariaDB", "MySQL", "SQLite"],
+    "concepts": ["RDBMS"]
+  },
+  "backend": ["FastAPI", "Flask", "Frappe Framework", "PHP"],
+  "frontend": ["React.js", "Tailwind CSS", "Bootstrap 5", "Jinja2"],
+  "concepts": [
+    "Data Structures & Algorithms",
+    "Object-Oriented Programming",
+    "Backend Architecture",
+    "B2B Web Solutions",
+    "Web Performance Optimization",
+    "SEO Fundamentals"
+  ],
+  "tools_platforms": ["Git", "GitHub", "Linux (Ubuntu)", "Pillow (PIL)"],
+  "languages_spoken": ["English", "Oriya", "Hindi", "Gujarati"]
+}

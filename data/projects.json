@@ -1,0 +1,29 @@
+[
+  {
+    "id": "digital-dukan",
+    "title": "Digital Dukan (Surat Textile Catalog)",
+    "domain": "Textile B2B",
+    "description": "A high-performance textile catalog and inquiry platform built to replace bulky WhatsApp catalogs.",
+    "key_features": [
+      "Flask-based backend for fast global access",
+      "Automated image compression using Pillow with 90% size reduction via WebP",
+      "Direct WhatsApp inquiry integration for lead generation",
+      "Secure admin dashboard for non-technical traders"
+    ],
+    "tech_stack": ["Python", "Flask", "Pillow", "WebP"],
+    "status": "in-progress"
+  },
+  {
+    "id": "clickmart",
+    "title": "ClickMart E-Commerce Website",
+    "domain": "E-Commerce",
+    "description": "A full-stack e-commerce web application with modern UI and secure authentication.",
+    "key_features": [
+      "Product listings and shopping cart system",
+      "Order management features",
+      "Responsive and mobile-first design"
+    ],
+    "tech_stack": ["React.js", "Tailwind CSS"],
+    "status": "completed"
+  }
+]
