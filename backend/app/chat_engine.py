@@ -20,6 +20,13 @@ def search_portfolio(question: str) -> str:
         return about
 
     # Skills
+    if "erpnext" in question_lower or "erp next" in question_lower:
+        skills = load_json("skills.json")
+        backend = ", ".join(skills.get("backend", []))
+        if "Frappe Framework" in backend:
+            return "ERPNext is not listed in my skills. I do have experience with the Frappe Framework, which is the foundation behind ERPNext."
+        return "ERPNext is not listed in my skills."
+
     if "skill" in question_lower or "technology" in question_lower:
         skills = load_json("skills.json")
 

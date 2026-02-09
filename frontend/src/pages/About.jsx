@@ -2,19 +2,28 @@ import { useEffect, useState } from "react";
 
 export default function About() {
   const [aboutText, setAboutText] = useState("");
+  const [contact, setContact] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/about")
-      .then((res) => {
+    Promise.all([
+      fetch("http://127.0.0.1:8000/about").then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch about data");
         }
         return res.json();
-      })
-      .then((data) => {
-        setAboutText(data.content);
+      }),
+      fetch("http://127.0.0.1:8000/contact").then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch contact data");
+        }
+        return res.json();
+      }),
+    ])
+      .then(([aboutData, contactData]) => {
+        setAboutText(aboutData.content);
+        setContact(contactData);
         setLoading(false);
       })
       .catch((err) => {
@@ -37,6 +46,42 @@ export default function About() {
       <pre className="whitespace-pre-wrap text-body text-[#A7B0BF]">
         {aboutText}
       </pre>
+
+      {contact && (
+        <div className="mt-6 space-y-2">
+          <p className="text-body text-[#A7B0BF]">
+            <span className="text-[#E6EAF2] font-semibold">Name:</span>{" "}
+            {contact.name}
+          </p>
+          <p className="text-body text-[#A7B0BF]">
+            <span className="text-[#E6EAF2] font-semibold">Email:</span>{" "}
+            {contact.email}
+          </p>
+          <p className="text-body text-[#A7B0BF]">
+            <span className="text-[#E6EAF2] font-semibold">Location:</span>{" "}
+            {contact.location}
+          </p>
+
+          <div className="mt-4 flex flex-wrap gap-3">
+            <a
+              href={contact.github}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-outline"
+            >
+              GitHub
+            </a>
+            <a
+              href={contact.linkedin}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-outline"
+            >
+              LinkedIn
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

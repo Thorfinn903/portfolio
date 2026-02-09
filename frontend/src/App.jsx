@@ -10,6 +10,8 @@ import Projects from "./pages/Projects";
 import Certificates from "./pages/Certificates";
 import Contact from "./pages/Contact";
 import Chat from "./pages/Chat";
+import PortfolioAgent from "./components/PortfolioAgent";
+import Profile from "./pages/Profile";
 
 
 export default function App() {
@@ -27,8 +29,10 @@ export default function App() {
           <Route path="/certificates" element={<Certificates />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/chat" element={<Chat />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </main>
+      <PortfolioAgent />
     </div>
   );
 }

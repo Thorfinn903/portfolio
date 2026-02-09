@@ -4,6 +4,7 @@
     "title": "Digital Dukan (Surat Textile Catalog)",
     "domain": "Textile B2B",
     "description": "A high-performance textile catalog and inquiry platform built to replace bulky WhatsApp catalogs.",
+    "link": "https://github.com/Thorfinn903/surat-textile-demo",
     "key_features": [
       "Flask-based backend for fast global access",
       "Automated image compression using Pillow with 90% size reduction via WebP",
@@ -18,6 +19,7 @@
     "title": "ClickMart E-Commerce Website",
     "domain": "E-Commerce",
     "description": "A full-stack e-commerce web application with modern UI and secure authentication.",
+    "link": "https://github.com/Thorfinn903/clickmart",
     "key_features": [
       "Product listings and shopping cart system",
       "Order management features",

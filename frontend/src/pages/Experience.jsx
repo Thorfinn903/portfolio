@@ -27,7 +27,7 @@ export default function Experience() {
   if (error) return <p className="state-error">Error: {error}</p>;
 
   return (
-    <div className="space-y-6">
+    <div className="page-narrow">
       <h1 className="text-h1 mb-6">Experience</h1>
 
       <div className="space-y-6">
@@ -41,8 +41,8 @@ export default function Experience() {
               {job.duration} | {job.location}
             </p>
 
-            <ul className="mt-3 list-disc list-inside text-[#A7B0BF]">
-              {job.responsibilities.map((item, i) => (
+            <ul className="mt-2 list-disc list-inside text-[#A7B0BF]">
+              {job.responsibilities.slice(0, 3).map((item, i) => (
                 <li key={i}>{item}</li>
               ))}
             </ul>

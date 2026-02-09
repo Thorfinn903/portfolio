@@ -27,16 +27,26 @@ export default function Projects() {
   if (error) return <p className="state-error">Error: {error}</p>;
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-h1 mb-6">Projects</h1>
+    <div className="section-block">
+      {/* <div className="section-block">
+        <p className="text-meta">Portfolio</p>
+        <h1 className="text-h1">Projects</h1>
+        <p className="text-body text-[color:var(--color-text-muted)]">
+          High-signal work with clear outcomes and measurable impact.
+        </p>
+      </div> */}
 
-      <div className="space-y-6">
+      <div className="grid gap-6 lg:grid-cols-2">
         {projects.map((project) => (
           <div
             key={project.id}
             className="card"
           >
-            <h2 className="card-title">{project.title}</h2>
+            <h2 className="card-title">
+              <a href={project.link} target="_blank" rel="noopener noreferrer">
+                {project.title}
+              </a>
+            </h2>
             <p className="card-body mt-2">{project.description}</p>
 
             <div className="mt-3">

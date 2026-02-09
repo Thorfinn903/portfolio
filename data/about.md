@@ -1,4 +1,3 @@
-# About Me
 
 I am a Python-focused backend developer and ERPNext specialist with hands-on experience in building, customizing, and supporting business-critical systems.
 
