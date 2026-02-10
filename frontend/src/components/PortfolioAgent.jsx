@@ -1,66 +1,25 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
-import AgentButton from "./AgentButton";
-import AgentPanel from "./AgentPanel";
-
-const INTRO_KEY = "seenAgentIntro";
+import { useEffect, useState } from "react";
+import ChatAssistant from "./ChatAssistant";
 
 export default function PortfolioAgent() {
-  const { pathname } = useLocation();
-  const isHome = useMemo(() => pathname === "/", [pathname]);
   const [isOpen, setIsOpen] = useState(false);
-  const [isHalfOpen, setIsHalfOpen] = useState(false);
-  const [showIntro, setShowIntro] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const autoOpenTimer = useRef(null);
-
-  useEffect(() => {
-    if (!isHome) return;
-
-    const hasSeen = sessionStorage.getItem(INTRO_KEY) === "true";
-    if (hasSeen) return;
-
-    autoOpenTimer.current = setTimeout(() => {
-      setIsOpen(true);
-      setIsHalfOpen(true);
-      setShowIntro(true);
-      sessionStorage.setItem(INTRO_KEY, "true");
-    }, 3000);
-
-    return () => {
-      if (autoOpenTimer.current) {
-        clearTimeout(autoOpenTimer.current);
-      }
-    };
-  }, [isHome]);
 
   const handleToggle = () => {
-    if (autoOpenTimer.current) {
-      clearTimeout(autoOpenTimer.current);
-    }
-    setIsOpen((prev) => {
-      const next = !prev;
-      setIsHalfOpen(false);
-      setShowIntro(false);
-      return next;
-    });
+    setIsOpen((prev) => !prev);
   };
 
   const handleClose = () => {
     setIsOpen(false);
-    setIsHalfOpen(false);
-    setShowIntro(false);
-    setMessages([]);
-    setInput("");
-    setLoading(false);
   };
 
-  const sendMessage = async () => {
-    if (!input.trim()) return;
+  const sendMessage = async (preset) => {
+    const messageText = (preset ?? input).trim();
+    if (!messageText) return;
 
-    const userMessage = { role: "user", text: input };
+    const userMessage = { role: "user", text: messageText };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setLoading(true);
@@ -69,7 +28,7 @@ export default function PortfolioAgent() {
       const res = await fetch("http://127.0.0.1:8000/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: input }),
+        body: JSON.stringify({ question: messageText }),
       });
 
       const data = await res.json();
@@ -89,8 +48,6 @@ export default function PortfolioAgent() {
   useEffect(() => {
     const handleOpen = () => {
       setIsOpen(true);
-      setIsHalfOpen(false);
-      setShowIntro(false);
     };
 
     window.addEventListener("portfolio-agent:open", handleOpen);
@@ -99,12 +56,10 @@ export default function PortfolioAgent() {
 
   return (
     <>
-      <AgentButton isOpen={isOpen} onToggle={handleToggle} />
-      <AgentPanel
+      <ChatAssistant
         isOpen={isOpen}
-        isHalfOpen={isHalfOpen}
+        onToggle={handleToggle}
         onClose={handleClose}
-        showIntro={showIntro}
         messages={messages}
         input={input}
         loading={loading}

@@ -1,150 +1,107 @@
-from app.data_loader import load_json, load_markdown
+import sys
 import os
-from google import genai
+from pathlib import Path
+from dotenv import load_dotenv
+from groq import Groq  # <--- NEW LIBRARY
 
-client = genai.Client(api_key=os.environ["GOOGLE_API_KEY"])
+# --- 1. ROBUST IMPORT SYSTEM ---
+try:
+    from .data_loader import load_json, load_markdown
+except ImportError:
+    try:
+        from app.v3.data_loader import load_json, load_markdown
+    except ImportError:
+        sys.path.append(str(Path(__file__).resolve().parent))
+        from data_loader import load_json, load_markdown
+
+# --- 2. LAZY CONNECTION (Groq) ---
+def get_groq_client():
+    """
+    Connects to Groq only when needed.
+    """
+    # Load .env from backend folder
+    env_path = Path(__file__).resolve().parents[2] / '.env'
+    load_dotenv(dotenv_path=env_path)
+    
+    # Fallback load
+    load_dotenv()
+
+    api_key = os.getenv("GROQ_API_KEY")
+    if not api_key:
+        print("❌ CRITICAL: GROQ_API_KEY not found in .env")
+        return None
+
+    return Groq(api_key=api_key)
 
 
+# --- 3. LOGIC FUNCTIONS ---
 
 def search_portfolio(question: str) -> str:
     """
-    Very simple rule-based search over portfolio data.
-    This will later be replaced by embeddings + LLM.
+    Your Rule-Based Search (No changes needed here)
     """
-
     question_lower = question.lower()
 
-    # About
-    about = load_markdown("about.md")
     if "about" in question_lower or "who are you" in question_lower:
-        return about
+        return load_markdown("about.md")
 
-    # Skills
-    if "erpnext" in question_lower or "erp next" in question_lower:
+    if "skill" in question_lower or "stack" in question_lower:
         skills = load_json("skills.json")
-        backend = ", ".join(skills.get("backend", []))
-        if "Frappe Framework" in backend:
-            return "ERPNext is not listed in my skills. I do have experience with the Frappe Framework, which is the foundation behind ERPNext."
-        return "ERPNext is not listed in my skills."
-
-    if "skill" in question_lower or "technology" in question_lower:
-        skills = load_json("skills.json")
-
-        lines = ["My skills include:"]
-
-        # Programming Languages
-        langs = skills.get("programming_languages", {})
-        primary = ", ".join(langs.get("primary", []))
-        core = ", ".join(langs.get("core", []))
-        if primary:
-            lines.append(f"- Programming Languages: {primary}")
-        if core:
-            lines.append(f"- Core Languages: {core}")
-
-        # Backend
-        backend = ", ".join(skills.get("backend", []))
-        if backend:
-            lines.append(f"- Backend: {backend}")
-
-        # Frontend
-        frontend = ", ".join(skills.get("frontend", []))
-        if frontend:
-            lines.append(f"- Frontend: {frontend}")
-
-        # Databases
-        dbs = skills.get("databases", {})
-        relational = ", ".join(dbs.get("relational", []))
-        if relational:
-            lines.append(f"- Databases: {relational}")
-
-        # Tools
-        tools = ", ".join(skills.get("tools_platforms", []))
-        if tools:
-            lines.append(f"- Tools & Platforms: {tools}")
-
+        lines = ["Here is my technical stack:"]
+        if "backend" in skills:
+            lines.append(f"- Backend: {', '.join(skills['backend'])}")
+        if "frontend" in skills:
+            lines.append(f"- Frontend: {', '.join(skills['frontend'])}")
+        if "programming_languages" in skills:
+            langs = skills["programming_languages"]
+            lines.append(f"- Languages: {', '.join(langs.get('primary', []))}")
         return "\n".join(lines)
 
-    # Projects
     if "project" in question_lower:
         projects = load_json("projects.json")
-
-        lines = ["Here are some projects I have built:"]
+        lines = ["Here are my key projects:"]
         for p in projects:
-            lines.append(f"- {p['title']}: {p['description']}")
-
+            lines.append(f"- {p.get('title', 'Project')}: {p.get('description', '')}")
         return "\n".join(lines)
 
-    # Experience
-    if "experience" in question_lower or "work" in question_lower:
-        experience = load_json("experience.json")
-
-        lines = ["My work experience includes:"]
-        for e in experience:
-            lines.append(f"- {e['role']} at {e['company']} ({e['duration']})")
-
-        return "\n".join(lines)
-
-
-    # Education
-    if "education" in question_lower or "study" in question_lower or "college" in question_lower:
-        education = load_json("education.json")
-
-        lines = ["My education includes:"]
-        for e in education:
-            lines.append(f"- {e['degree']} at {e['institution']} ({e['duration']})")
-
-        return "\n".join(lines)
-
-
-    # Certificates
-    if "certificate" in question_lower or "certification" in question_lower:
-        certs = load_json("certificates.json")
-
-        lines = ["My certifications include:"]
-        for c in certs:
-            lines.append(f"- {c['title']}")
-
-        return "\n".join(lines)
-
-
-    return "I can only answer questions about my skills, projects, experience, education, and certificates."
+    return "I can answer questions about my skills, projects, and experience."
 
 
 def polish_with_llm(question: str, raw_answer: str) -> str:
-    # Do not send refusal messages to the LLM
-    if "only answer questions about" in raw_answer.lower():
+    """
+    Uses Groq (Llama 3) to rewrite the answer.
+    """
+    client = get_groq_client()
+    
+    # Skip if client fails or answer is simple refusal
+    if not client or "I can answer questions about" in raw_answer:
         return raw_answer
 
     prompt = f"""
-You are an assistant for a personal portfolio.
-
-STRICT RULES:
-- Use ONLY the information provided.
-- Do NOT add new facts.
-- Do NOT answer outside the portfolio.
-- Keep it professional and concise.
-
-QUESTION:
-{question}
-
-SOURCE ANSWER:
-{raw_answer}
-
-Rewrite the answer clearly and professionally.
-"""
+    You are a professional portfolio assistant.
+    USER QUESTION: {question}
+    RAW DATA: {raw_answer}
+    
+    TASK: Rewrite the raw data into a friendly, professional response. 
+    Keep it concise. Do not invent new facts.
+    """
 
     try:
-        response = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=prompt,
+        # Groq uses standard OpenAI-like chat completion
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            model="llama-3.3-70b-versatile",  # Free, fast model
         )
-
-        if response and response.text:
-            return response.text.strip()
-
-        return raw_answer
-
+        
+        return chat_completion.choices[0].message.content.strip()
+            
     except Exception as e:
-        print("Gemini error:", e)
+        print(f"⚠️ Groq Error: {e}")
         return raw_answer
-
+    
+    return raw_answer

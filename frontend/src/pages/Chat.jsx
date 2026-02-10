@@ -1,10 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChatMessage from "../components/ChatMessage";
 
 export default function Chat() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("checking");
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/system/health")
+      .then((res) => res.json())
+      .then((data) => setStatus(data.status))
+      .catch(() => setStatus("offline"));
+  }, []);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -50,7 +58,13 @@ export default function Chat() {
             <p className="text-body-sm font-semibold text-[#E6EAF2]">
               Portfolio Assistant
             </p>
-            <p className="text-body-sm text-[#A7B0BF]">FastAPI + LLM</p>
+            <div className="flex items-center gap-2 text-body-sm text-[#A7B0BF]">
+              <span
+                className={`status-dot ${status}`}
+                title={`System Status: ${status}`}
+              />
+              FastAPI + LLM
+            </div>
           </div>
           <span className="flex items-center gap-2 text-body-sm text-[#A7B0BF]">
             <span className={`status-dot ${loading ? "animate-pulse" : ""}`} />

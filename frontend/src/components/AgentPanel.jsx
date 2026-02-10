@@ -20,10 +20,11 @@ export default function AgentPanel({
   return (
     <aside className={`agent-panel ${stateClass}`} aria-hidden={!isOpen}>
       <header className="agent-panel-header">
-        <div>
-          <p className="text-body-sm font-semibold text-[#E6EAF2]">
-            Portfolio Agent · Recruiter View
-          </p>
+        <div className="agent-header-title">
+          <span className="text-body font-semibold text-[color:var(--color-text)]">
+            Portfolio Agent
+          </span>
+          <span className="agent-header-pill">Recruiter View</span>
         </div>
         <button
           type="button"
@@ -55,7 +56,7 @@ export default function AgentPanel({
 
           {loading && (
             <div className="text-body-sm text-[color:var(--color-text-muted)]">
-              Portfolio Agent is thinking...
+              Thinking...
             </div>
           )}
         </div>

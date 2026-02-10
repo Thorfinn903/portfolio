@@ -15,6 +15,13 @@
     --color-text-muted: #a4b0c1;
     --color-text-faint: #6e7b8c;
     --color-border: #232e3d;
+    --shadow-surface: 0 1px 0 rgba(255, 255, 255, 0.04), 0 12px 30px rgba(0, 0, 0, 0.4);
+    --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.04), 0 12px 30px rgba(0, 0, 0, 0.4);
+    --shadow-card-hover: 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 40px rgba(0, 0, 0, 0.48);
+    --shadow-panel: 0 1px 0 rgba(255, 255, 255, 0.04), 0 26px 58px rgba(0, 0, 0, 0.6);
+    --motion-fast: 180ms;
+    --motion-base: 200ms;
+    --motion-ease: ease-out;
   }
 
   html {
@@ -22,7 +29,10 @@
   }
 
   body {
-    @apply font-body text-body;
+    @apply bg-slate-950 text-slate-200 font-body text-body;
+    background-image: linear-gradient(to right, #1e293b 1px, transparent 1px),
+      linear-gradient(to bottom, #1e293b 1px, transparent 1px);
+    background-size: 40px 40px;
   }
 
   h1,
@@ -67,9 +77,8 @@
     color: var(--color-text-muted);
   }
   .app-shell {
-    @apply min-h-screen;
-    background-color: var(--color-bg);
-    color: var(--color-text);
+    @apply min-h-screen text-slate-200;
+    background-color: transparent;
   }
 
   .page-shell {
@@ -109,8 +118,11 @@
     @apply rounded-xl border p-5 transition-colors duration-200;
     border-color: var(--color-border);
     background-color: var(--color-card);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 12px 30px rgba(0, 0, 0, 0.4);
-    transition: box-shadow 200ms ease-out, background-color 200ms ease-out, border-color 200ms ease-out, transform 200ms ease-out;
+    box-shadow: var(--shadow-card);
+    transition: box-shadow var(--motion-base) var(--motion-ease),
+      background-color var(--motion-base) var(--motion-ease),
+      border-color var(--motion-base) var(--motion-ease),
+      transform var(--motion-base) var(--motion-ease);
   }
 
   .card-compact {
@@ -120,7 +132,7 @@
   .card:hover {
     @apply border-[#2C3646];
     background-color: var(--color-surface-3);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 40px rgba(0, 0, 0, 0.48);
+    box-shadow: var(--shadow-card-hover);
     transform: translateY(-1px);
   }
 
@@ -142,7 +154,10 @@
   .btn {
     @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-body-sm font-semibold transition-colors duration-200;
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8AB4F8]/60 focus-visible:ring-offset-0;
-    transition: transform 200ms ease-out, background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out;
+    transition: transform var(--motion-base) var(--motion-ease),
+      background-color var(--motion-base) var(--motion-ease),
+      border-color var(--motion-base) var(--motion-ease),
+      color var(--motion-base) var(--motion-ease);
   }
 
   .btn:hover {
@@ -188,7 +203,7 @@
     @apply rounded-xl border;
     border-color: var(--color-border);
     background-color: var(--color-surface);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 16px 36px rgba(0, 0, 0, 0.48);
+    box-shadow: var(--shadow-surface);
   }
 
   .chat-header {
@@ -258,6 +273,18 @@
     @apply inline-block h-2 w-2 rounded-full;
     background-color: var(--color-accent);
   }
+  .status-dot.healthy {
+    background-color: #34d399;
+  }
+  .status-dot.degraded {
+    background-color: #fbbf24;
+  }
+  .status-dot.offline {
+    background-color: #f87171;
+  }
+  .status-dot.checking {
+    background-color: #60a5fa;
+  }
 
   .state-loading {
     @apply text-body-sm;
@@ -284,7 +311,7 @@
     color: var(--color-text);
     @apply bottom-0 left-0 right-0 h-[88vh] rounded-t-2xl md:top-0 md:left-auto md:right-0 md:h-full md:w-[400px] md:rounded-none;
     will-change: transform;
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 26px 58px rgba(0, 0, 0, 0.6);
+    box-shadow: var(--shadow-panel);
   }
 
   .agent-panel-closed {
@@ -311,8 +338,15 @@
     border-color: var(--color-border);
   }
 
-  .agent-panel-header p:first-child {
-    @apply text-body font-semibold;
+  .agent-header-title {
+    @apply flex items-center gap-2;
+  }
+
+  .agent-header-pill {
+    @apply text-body-sm rounded-full px-2.5 py-1;
+    background-color: var(--color-surface-strong);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
   }
 
   .agent-panel-body {

@@ -1,9 +1,19 @@
+from pathlib import Path
 from dotenv import load_dotenv
-load_dotenv()
-from fastapi import FastAPI
+
+# Fast, direct load
+env_path = Path(__file__).resolve().parents[1] / ".env"
+load_dotenv(dotenv_path=env_path)
+from fastapi import FastAPI, Request
 from app.data_loader import load_json, load_markdown
 from fastapi.middleware.cors import CORSMiddleware
 from app.chat_engine import search_portfolio, polish_with_llm
+from app.v3.controller import handle_chat, ChatRequest
+import time
+from app.v3.middleware.debug_tracing import DebugTracingMiddleware
+from app.v3.system.observability import SystemMonitor
+from app.v3.analytics.analytics_engine import AnalyticsEngine
+from app.v3.system.observability import SystemMonitor
 
 
 
@@ -21,6 +31,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(DebugTracingMiddleware)
 
 @app.get("/")
 def root():
@@ -75,12 +86,49 @@ def get_contact():
     """
     return load_json("contact.json")
 
+@app.get("/system/health", tags=["System"])
+def system_health():
+    return SystemMonitor().get_status()
+
+@app.get("/system/analytics", tags=["System"])
+def system_analytics():
+    return AnalyticsEngine().get_analytics()
+
 @app.post("/chat")
-def chat(payload: dict):
+async def chat(payload: dict, request: Request):
     question = payload.get("question", "")
-    raw_answer = search_portfolio(question)
-    final_answer = polish_with_llm(question, raw_answer)
-    return {"answer": final_answer}
+    session_id = payload.get("session_id")
+    metadata = payload.get("metadata")
+    use_v2 = payload.get("v2") is True
+
+    if use_v2:
+        raw_answer = search_portfolio(question)
+        final_answer = polish_with_llm(question, raw_answer)
+        return {"answer": final_answer}
+
+    v3_response = await handle_chat(
+        ChatRequest(
+            question=question,
+            session_id=session_id,
+            metadata=metadata,
+        )
+    )
+
+    response = {
+        "answer": v3_response.answer,
+        "intent": v3_response.intent,
+        "strategy": v3_response.strategy,
+        "confidence_score": v3_response.confidence_score,
+        "evidence": v3_response.evidence,
+        "debug": v3_response.debug,
+    }
+    if response.get("debug") is not None:
+        response["debug"]["request_id"] = getattr(request.state, "request_id", None)
+        start_time = getattr(request.state, "start_time", None)
+        response["debug"]["process_time_ms"] = round(
+            (time.monotonic() - start_time) * 1000, 2
+        ) if start_time else 0
+    return response
 
 
 
