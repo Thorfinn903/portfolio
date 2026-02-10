@@ -139,7 +139,7 @@ Update these to change the portfolio content without touching code:
 - Frontend: cd frontend then npm install and npm run dev
 
 ## Deployment notes
-- Frontend uses frontend/vercel.json to rewrite all routes to index.html.
+- Vercel config is provided in both `vercel.json` (repo root) and `frontend/vercel.json` (if Root Directory is set to `frontend`).
 - Backend CORS defaults to localhost + Vercel, including preview subdomains. Override with CORS_ORIGINS.
 - If the backend sleeps on free tiers, the assistant shows a wake message after 4 seconds.
 
