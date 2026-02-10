@@ -59,6 +59,7 @@ Backend:
 - GEMINI_API_KEY optional for the Gemini client.
 - LLM_LONG_ANSWER_CHARS optional threshold for when to allow LLM polish.
 - CORS_ORIGINS optional comma-separated list of allowed origins (use `*` to allow all, credentials disabled).
+- DATA_DIR optional absolute path to the `Data/` folder (useful if the deploy root differs).
 
 Frontend:
 - VITE_API_BASE_URL base URL for the backend API (example: `https://your-backend.example.com`).
