@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { apiUrl } from "../lib/api";
 
 export default function Contact() {
   const [contact, setContact] = useState(null);
@@ -6,7 +7,7 @@ export default function Contact() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/contact")
+    fetch(apiUrl("/contact"))
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch contact data");

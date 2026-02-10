@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { apiUrl } from "../lib/api";
 
 export default function Certificates() {
   const [certificates, setCertificates] = useState([]);
@@ -6,7 +7,7 @@ export default function Certificates() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/certificates")
+    fetch(apiUrl("/certificates"))
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch certificates");

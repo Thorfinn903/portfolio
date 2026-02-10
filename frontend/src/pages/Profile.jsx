@@ -10,6 +10,7 @@ import {
   ScrollText,
   Sparkles,
 } from "lucide-react";
+import { apiUrl } from "../lib/api";
 
 const revealProps = {
   initial: { opacity: 0, y: 50 },
@@ -52,13 +53,13 @@ export default function Profile() {
           certificatesRes,
           projectsRes,
         ] = await Promise.all([
-          fetch("http://127.0.0.1:8000/about"),
-          fetch("http://127.0.0.1:8000/contact"),
-          fetch("http://127.0.0.1:8000/experience"),
-          fetch("http://127.0.0.1:8000/education"),
-          fetch("http://127.0.0.1:8000/skills"),
-          fetch("http://127.0.0.1:8000/certificates"),
-          fetch("http://127.0.0.1:8000/projects"),
+          fetch(apiUrl("/about")),
+          fetch(apiUrl("/contact")),
+          fetch(apiUrl("/experience")),
+          fetch(apiUrl("/education")),
+          fetch(apiUrl("/skills")),
+          fetch(apiUrl("/certificates")),
+          fetch(apiUrl("/projects")),
         ]);
 
         const responses = [

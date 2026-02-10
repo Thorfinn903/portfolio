@@ -16,6 +16,7 @@ import {
   Terminal,
   WifiOff,
 } from "lucide-react";
+import { apiUrl } from "../lib/api";
 
 const containerVariants = {
   hidden: {},
@@ -41,8 +42,8 @@ export default function Dashboard() {
     const fetchAll = async () => {
       try {
         const [healthRes, analyticsRes] = await Promise.all([
-          fetch("http://127.0.0.1:8000/system/health"),
-          fetch("http://127.0.0.1:8000/system/analytics"),
+          fetch(apiUrl("/system/health")),
+          fetch(apiUrl("/system/analytics")),
         ]);
 
         if (!healthRes.ok || !analyticsRes.ok) {

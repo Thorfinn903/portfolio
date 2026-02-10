@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import ChatAssistant from "./ChatAssistant";
+import { apiUrl } from "../lib/api";
 
 export default function PortfolioAgent() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isSystemWaking, setIsSystemWaking] = useState(false);
 
   const handleToggle = () => {
     setIsOpen((prev) => !prev);
@@ -23,9 +25,13 @@ export default function PortfolioAgent() {
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setLoading(true);
+    setIsSystemWaking(false);
+    const wakeTimer = setTimeout(() => {
+      setIsSystemWaking(true);
+    }, 4000);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/chat", {
+      const res = await fetch(apiUrl("/chat"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: messageText }),
@@ -41,6 +47,8 @@ export default function PortfolioAgent() {
         { role: "bot", text: "Something went wrong. Please try again." },
       ]);
     } finally {
+      clearTimeout(wakeTimer);
+      setIsSystemWaking(false);
       setLoading(false);
     }
   };
@@ -63,6 +71,7 @@ export default function PortfolioAgent() {
         messages={messages}
         input={input}
         loading={loading}
+        isSystemWaking={isSystemWaking}
         onInputChange={setInput}
         onSend={sendMessage}
       />

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { apiUrl } from "../lib/api";
 
 export default function Experience() {
   const [experience, setExperience] = useState([]);
@@ -6,7 +7,7 @@ export default function Experience() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/experience")
+    fetch(apiUrl("/experience"))
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch experience data");

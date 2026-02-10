@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { apiUrl } from "../lib/api";
 import { motion } from "framer-motion";
 import { Github } from "lucide-react";
 
@@ -18,7 +19,7 @@ export default function Projects() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/projects")
+    fetch(apiUrl("/projects"))
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch projects");

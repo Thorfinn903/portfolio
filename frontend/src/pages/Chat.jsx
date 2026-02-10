@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ChatMessage from "../components/ChatMessage";
+import { apiUrl } from "../lib/api";
 
 export default function Chat() {
   const [messages, setMessages] = useState([]);
@@ -8,7 +9,7 @@ export default function Chat() {
   const [status, setStatus] = useState("checking");
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/system/health")
+    fetch(apiUrl("/system/health"))
       .then((res) => res.json())
       .then((data) => setStatus(data.status))
       .catch(() => setStatus("offline"));
@@ -23,7 +24,7 @@ export default function Chat() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/chat", {
+      const res = await fetch(apiUrl("/chat"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: input }),

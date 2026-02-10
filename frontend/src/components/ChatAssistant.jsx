@@ -16,6 +16,7 @@ export default function ChatAssistant({
   messages,
   input,
   loading,
+  isSystemWaking,
   onInputChange,
   onSend,
 }) {
@@ -61,6 +62,13 @@ export default function ChatAssistant({
                   <ChatMessage key={i} role={m.role} text={m.text} />
                 ))}
               </div>
+
+              {isSystemWaking && (
+                <p className="mt-2 text-xs text-amber-300">
+                  ⚡ NEURAL CORE INITIALIZING: Waking up backend engines (may
+                  take ~45s)...
+                </p>
+              )}
 
               {loading && (
                 <p className="mt-2 text-xs text-slate-400">Thinking...</p>

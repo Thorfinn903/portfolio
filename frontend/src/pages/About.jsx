@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { apiUrl } from "../lib/api";
 
 export default function About() {
   const [aboutText, setAboutText] = useState("");
@@ -8,13 +9,13 @@ export default function About() {
 
   useEffect(() => {
     Promise.all([
-      fetch("http://127.0.0.1:8000/about").then((res) => {
+      fetch(apiUrl("/about")).then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch about data");
         }
         return res.json();
       }),
-      fetch("http://127.0.0.1:8000/contact").then((res) => {
+      fetch(apiUrl("/contact")).then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch contact data");
         }

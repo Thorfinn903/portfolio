@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -16,6 +17,31 @@ from app.v3.analytics.analytics_engine import AnalyticsEngine
 from app.v3.system.observability import SystemMonitor
 
 
+def build_cors_settings():
+    origins_env = os.getenv("CORS_ORIGINS", "").strip()
+    if origins_env:
+        if origins_env == "*":
+            return {
+                "allow_origins": ["*"],
+                "allow_credentials": False,
+                "allow_origin_regex": None,
+            }
+        origins = [origin.strip() for origin in origins_env.split(",") if origin.strip()]
+        return {
+            "allow_origins": origins,
+            "allow_credentials": True,
+            "allow_origin_regex": None,
+        }
+
+    return {
+        "allow_origins": [
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "https://bnm-portfolio.vercel.app",
+        ],
+        "allow_credentials": True,
+        "allow_origin_regex": r"^https://.*\.vercel\.app$",
+    }
 
 
 app = FastAPI(
@@ -24,12 +50,12 @@ app = FastAPI(
     version="1.0.0"
 )
 
+cors_settings = build_cors_settings()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    **cors_settings,
 )
 app.add_middleware(DebugTracingMiddleware)
 

@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
 
-# Base path to /data directory
-DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+# Base path to /Data directory (case-sensitive on Linux)
+DATA_DIR = Path(__file__).resolve().parents[2] / "Data"
 
 
 def load_json(filename: str):
